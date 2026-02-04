@@ -4,7 +4,13 @@ Following guide is based on VSTSDK v3.7.12, where Windows bundle build is fixed 
 
 ## 0. Set VSTSDK  
 
-Download or clone VSTSDK and place it where you're least likely to move/rename/etc.  
+Download or clone VSTSDK and place it where you're least likely to move/rename/etc.
+
+### linux
+
+```sh
+sudo apt-get install cmake gcc libstdc++6 libx11-xcb-dev libxcb-util-dev libxcb-cursor-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev libfontconfig1-dev libcairo2-dev libgtkmm-3.0-dev libsqlite3-dev libxcb-keysyms1-dev
+```
 
 ### macOS - Check AudioUnit SDK Path  
 
