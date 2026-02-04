@@ -2,6 +2,10 @@ name: Windows Build
 
 on:
   workflow_dispatch:
+  push:
+    branches: [master, main, dev]
+  pull_request:
+    branches: [master, main]
 
 env:
   build-dir: build
@@ -33,7 +37,6 @@ jobs:
           -DSMTG_ENABLE_VST3_PLUGIN_EXAMPLES=OFF
           -DSMTG_ENABLE_VST3_HOSTING_EXAMPLES=OFF
           -DSMTG_CREATE_BUNDLE_FOR_WINDOWS=OFF
-          -DGITHUB_ACTIONS=ON
 
       - name: Build
         run: cmake --build ${{ github.workspace }}/${{ env.build-dir }}  --config ${{ env.build-type }}
