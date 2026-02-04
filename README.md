@@ -4,12 +4,14 @@ JS Inflator is a copy of Sonox Inflator.
 Runs in double precision 64-bit internal processing.  
 Also double precision input / output if supported.  
 
-[![GitHub Release](https://img.shields.io/github/v/release/kiriki-liszt/JS_Inflator?style=flat-square&label=Get%20latest%20Release)](https://github.com/Kiriki-liszt/JS_Inflator/releases/latest)
-[![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/kiriki-liszt/JS_Inflator/total?style=flat-square&label=total%20downloads&color=blue)](https://tooomm.github.io/github-release-stats/?username=Kiriki-liszt&repository=JS_Inflator)  
+[![GitHub Release](https://img.shields.io/github/v/release/1800alex/JS_Inflator?style=flat-square&label=Get%20latest%20Release)](https://github.com/1800alex/JS_Inflator/releases/latest)
+[![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/1800alex/JS_Inflator/total?style=flat-square&label=total%20downloads&color=blue)](https://tooomm.github.io/github-release-stats/?username=1800alex&repository=JS_Inflator)  
 
 [![Static Badge](https://img.shields.io/badge/coffee%20maybe%3F%20%3D%5D%20-gray?style=for-the-badge&logo=buy-me-a-coffee)](https://buymeacoffee.com/kirikiaris)
 
-<img src="https://github.com/Kiriki-liszt/JS_Inflator_to_VST2_VST3/raw/main/screenshots/screenshot_both.png"  width="600"/>  
+[Project Forked from Kiriki-liszt/JS_Inflator](https://github.com/Kiriki-liszt/JS_Inflator/)
+
+<img src="https://github.com/1800alex/JS_Inflator_to_VST2_VST3/raw/main/screenshots/screenshot_both.png"  width="600"/>  
 
 Comes in two GUIs. The alternative GUI is made by Twarch.  
 
@@ -50,7 +52,7 @@ Unzip macOS version from latest Release and copy vst3 to "/Library/Audio/Plug-In
 > sudo codesign --force --sign - /Library/Audio/Plug-Ins/Components/JS_Inflator.component  
 > ```  
 >
-> tested by @jonasborneland [here](https://github.com/Kiriki-liszt/JS_Inflator_to_VST2_VST3/issues/12#issuecomment-1616671177)
+> tested by @jonasborneland [here](https://github.com/1800alex/JS_Inflator_to_VST2_VST3/issues/12#issuecomment-1616671177)
 
 ### Version upgrade from v1.x.x to v2.x.x  
 
@@ -82,7 +84,7 @@ Tested as working are;
 >
 > <https://steinbergmedia.github.io/vst3_dev_portal/pages/FAQ/Licensing.html>  
 
-<img src="https://github.com/Kiriki-liszt/JS_Inflator_to_VST2_VST3/raw/main/VST_Compatible_Logo_Steinberg_with_TM.png"  width="200"/>
+<img src="https://github.com/1800alex/JS_Inflator_to_VST2_VST3/raw/main/VST_Compatible_Logo_Steinberg_with_TM.png"  width="200"/>
 
 VSTSDK 3.7.9 used  
 VSTGUI 4.12 used  
@@ -191,25 +193,25 @@ Now it is free of Phase issuses.
 
 * Comparisons  
 1x  
-<img src="https://github.com/Kiriki-liszt/JS_Inflator_to_VST2_VST3/raw/main/screenshots/OS_1x_Min.png"  width="400"/>  
+<img src="https://github.com/1800alex/JS_Inflator_to_VST2_VST3/raw/main/screenshots/OS_1x_Min.png"  width="400"/>  
 
 2x Min-phase  
-<img src="https://github.com/Kiriki-liszt/JS_Inflator_to_VST2_VST3/raw/main/screenshots/OS_2x_Min.png"  width="400"/>  
+<img src="https://github.com/1800alex/JS_Inflator_to_VST2_VST3/raw/main/screenshots/OS_2x_Min.png"  width="400"/>  
 
 2x Lin-phase  
-<img src="https://github.com/Kiriki-liszt/JS_Inflator_to_VST2_VST3/raw/main/screenshots/OS_2x_Lin.png"  width="400"/>  
+<img src="https://github.com/1800alex/JS_Inflator_to_VST2_VST3/raw/main/screenshots/OS_2x_Lin.png"  width="400"/>  
 
 4x Min-phase  
-<img src="https://github.com/Kiriki-liszt/JS_Inflator_to_VST2_VST3/raw/main/screenshots/OS_4x_Min.png"  width="400"/>  
+<img src="https://github.com/1800alex/JS_Inflator_to_VST2_VST3/raw/main/screenshots/OS_4x_Min.png"  width="400"/>  
 
 4x Lin-phase  
-<img src="https://github.com/Kiriki-liszt/JS_Inflator_to_VST2_VST3/raw/main/screenshots/OS_4x_Lin.png"  width="400"/>  
+<img src="https://github.com/1800alex/JS_Inflator_to_VST2_VST3/raw/main/screenshots/OS_4x_Lin.png"  width="400"/>  
 
 8x Min-phase  
-<img src="https://github.com/Kiriki-liszt/JS_Inflator_to_VST2_VST3/raw/main/screenshots/OS_8x_Min.png"  width="400"/>  
+<img src="https://github.com/1800alex/JS_Inflator_to_VST2_VST3/raw/main/screenshots/OS_8x_Min.png"  width="400"/>  
 
 8x Lin-phase  
-<img src="https://github.com/Kiriki-liszt/JS_Inflator_to_VST2_VST3/raw/main/screenshots/OS_8x_Lin.png"  width="400"/>  
+<img src="https://github.com/1800alex/JS_Inflator_to_VST2_VST3/raw/main/screenshots/OS_8x_Lin.png"  width="400"/>  
 
 * SIMD optimization
 
@@ -219,7 +221,7 @@ Anyone trying to do so, check and compare!
 
 * Latency change reporting  
 
-Restarting plugin should be from Contorller side.  
+Restarting plugin should be from Controller side.  
 One example would be using 'sendTextMessage' and 'receiveText' pair, so when Processor detects parameter change related to latency, it sends textMessage and Controller receives it and restarts.  
 
 However, In AUv2, the restartComponent should call setupProcess, but it does not...  
@@ -237,7 +239,7 @@ Specifying knob modes at 'createView' in 'controller.cpp' makes knobs work in se
 setKnobMode(Steinberg::Vst::KnobModes::kLinearMode);
 ```
 
-[https://github.com/Kiriki-liszt/JS_Inflator_to_VST2_VST3/blob/v1.6.0/source/InflatorPackagecontroller.cpp#L339](https://github.com/Kiriki-liszt/JS_Inflator_to_VST2_VST3/blob/v1.6.0/source/InflatorPackagecontroller.cpp#L339)  
+[https://github.com/1800alex/JS_Inflator_to_VST2_VST3/blob/v1.6.0/source/InflatorPackagecontroller.cpp#L339](https://github.com/1800alex/JS_Inflator_to_VST2_VST3/blob/v1.6.0/source/InflatorPackagecontroller.cpp#L339)  
 
 * How VSTSDK identifies each plugins  
 
