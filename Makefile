@@ -71,7 +71,7 @@ test-build:
 # Format source code
 format:
 	@echo "Formatting source code..."
-	find src tests -name '*.cpp' -o -name '*.h' | xargs clang-format -i
+	find source -name '*.cpp' -o -name '*.h' | xargs clang-format -i
 	@echo "Format complete!"
 
 # Help
