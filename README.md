@@ -38,6 +38,11 @@ Cubase, Ableton Live, Logic Pro, Cakewalk by Bandlab, Bitwig are tested as worki
 
 Unzip Windows version from latest Release and copy to "C:\Program Files\Common Files\VST3".  
 
+Installing msvc dependencies might help if the plugin crashes.
+[https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170)
+Direct download link
+[https://aka.ms/vs/17/release/vc_redist.x64.exe](https://aka.ms/vs/17/release/vc_redist.x64.exe)
+
 ### MacOS  
 
 Unzip macOS version from latest Release and copy vst3 to "/Library/Audio/Plug-Ins/VST3" and component to "/Library/Audio/Plug-Ins/Components".  

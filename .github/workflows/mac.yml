@@ -1,0 +1,177 @@
+name: macOS Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+env:
+  build-dir: build
+  build-type: Release
+
+jobs:
+  build-intel:
+    name: Build for macOS (Intel x86_64)
+    runs-on: macos-13 # Intel-based runner
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: Install dependencies
+        run: |
+          brew install cmake pkg-config
+
+      - name: Configure CMake
+        run: |
+          cmake -B ${{ env.build-dir }} \
+            -DCMAKE_BUILD_TYPE=${{ env.build-type }} \
+            -DCMAKE_OSX_ARCHITECTURES=x86_64 \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+            -DFETCHCONTENT_QUIET=OFF
+
+      - name: Build
+        run: |
+          cmake --build ${{ env.build-dir }} --config ${{ env.build-type }} --parallel $(sysctl -n hw.ncpu)
+
+      - name: Show build artifacts
+        run: |
+          find ${{ env.build-dir }} -name "*.vst3" -type d
+
+      - name: Upload VST3 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-macos-intel-${{ github.sha }}
+          path: ${{ env.build-dir }}/VST3/Release/JS_Inflator.vst3/
+
+  build-apple-silicon:
+    name: Build for macOS (Apple Silicon arm64)
+    runs-on: macos-14 # Apple Silicon (M1/M2) runner
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: Install dependencies
+        run: |
+          brew install cmake pkg-config
+
+      - name: Configure CMake
+        run: |
+          cmake -B ${{ env.build-dir }} \
+            -DCMAKE_BUILD_TYPE=${{ env.build-type }} \
+            -DCMAKE_OSX_ARCHITECTURES=arm64 \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0 \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+            -DFETCHCONTENT_QUIET=OFF
+
+      - name: Build
+        run: |
+          cmake --build ${{ env.build-dir }} --config ${{ env.build-type }} --parallel $(sysctl -n hw.ncpu)
+
+      - name: Show build artifacts
+        run: |
+          find ${{ env.build-dir }} -name "*.vst3" -type d
+
+      - name: Upload VST3 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-macos-arm64-${{ github.sha }}
+          path: ${{ env.build-dir }}/VST3/Release/JS_Inflator.vst3/
+
+  build-universal:
+    name: Build Universal Binary (Intel + Apple Silicon)
+    runs-on: macos-14 # Apple Silicon runner (can cross-compile)
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: Install dependencies
+        run: |
+          brew install cmake pkg-config
+
+      - name: Configure CMake
+        run: |
+          cmake -B ${{ env.build-dir }} \
+            -DCMAKE_BUILD_TYPE=${{ env.build-type }} \
+            -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+            -DFETCHCONTENT_QUIET=OFF
+
+      - name: Build
+        run: |
+          cmake --build ${{ env.build-dir }} --config ${{ env.build-type }} --parallel $(sysctl -n hw.ncpu)
+
+      - name: Verify Universal Binary
+        run: |
+          find ${{ env.build-dir }}/VST3/Release/JS_Inflator.vst3 -name "*.dylib" -o -name "JS_Inflator" -type f | while read file; do
+            echo "Checking architectures in: $file"
+            lipo -info "$file" || file "$file"
+          done
+
+      - name: Upload VST3 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-macos-universal-${{ github.sha }}
+          path: ${{ env.build-dir }}/VST3/Release/JS_Inflator.vst3/
+
+  build-with-audiounit:
+    name: Build with AudioUnit (AUv2) - Universal
+    runs-on: macos-14
+    # This job builds both VST3 and AUv2 if possible
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: Install dependencies
+        run: |
+          brew install cmake pkg-config
+
+      - name: Clone AudioUnit SDK
+        run: |
+          # Clone AudioUnit SDK next to vst3sdk as recommended
+          git clone --depth 1 https://github.com/apple/AudioUnitSDK.git libs/AudioUnitSDK
+
+      - name: Configure CMake with AudioUnit
+        run: |
+          cmake -B ${{ env.build-dir }} \
+            -DCMAKE_BUILD_TYPE=${{ env.build-type }} \
+            -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=10.13 \
+            -DSMTG_COREAUDIO_SDK_PATH="${{ github.workspace }}/libs/AudioUnitSDK" \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+            -DFETCHCONTENT_QUIET=OFF \
+            -GXcode
+
+      - name: Build
+        run: |
+          cmake --build ${{ env.build-dir }} --config ${{ env.build-type }} --parallel $(sysctl -n hw.ncpu)
+
+      - name: Show all artifacts
+        run: |
+          echo "=== VST3 ==="
+          find ${{ env.build-dir }} -name "*.vst3" -type d
+          echo "=== AudioUnit ==="
+          find ${{ env.build-dir }} -name "*.component" -type d
+
+      - name: Upload VST3 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-macos-vst3-au-${{ github.sha }}
+          path: |
+            ${{ env.build-dir }}/VST3/Release/JS_Inflator.vst3/
+            ${{ env.build-dir }}/**/Release/*.component/

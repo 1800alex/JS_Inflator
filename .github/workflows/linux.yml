@@ -1,0 +1,92 @@
+name: Linux Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+env:
+  build-dir: build
+  build-type: Release
+
+jobs:
+  build-native:
+    name: Build on Ubuntu (Native)
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends \
+          build-essential \
+          cmake \
+          git \
+          pkg-config \
+          libx11-xcb-dev \
+          libxcb-util-dev \
+          libxcb-cursor-dev \
+          libxcb-xkb-dev \
+          libxkbcommon-dev \
+          libxkbcommon-x11-dev \
+          libfontconfig1-dev \
+          libcairo2-dev \
+          libgtkmm-3.0-dev \
+          libsqlite3-dev \
+          libxcb-keysyms1-dev
+
+    - name: Configure CMake
+      run: |
+        cmake -B ${{ env.build-dir }} \
+          -DCMAKE_BUILD_TYPE=${{ env.build-type }} \
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+          -DFETCHCONTENT_QUIET=OFF
+
+    - name: Build
+      run: |
+        cmake --build ${{ env.build-dir }} --config ${{ env.build-type }} --parallel $(nproc)
+
+    - name: Upload VST3 artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}-linux-native-${{ github.sha }}
+        path: ${{ env.build-dir }}/VST3/Release/JS_Inflator.vst3/
+
+  build-docker:
+    name: Build with Docker (Ubuntu 20.04)
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build with Docker
+      run: |
+        docker build --build-arg NOCACHE=0 \
+          -f Dockerfile.ubuntu2004 \
+          -t jsinflator-vst:ubuntu2004 \
+          .
+
+    - name: Extract artifacts
+      run: |
+        mkdir -p dist/ubuntu2004
+        docker run --rm -v "$(pwd)/dist/ubuntu2004:/out" jsinflator-vst:ubuntu2004
+        ls -la dist/ubuntu2004/
+
+    - name: Upload VST3 artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}-linux-docker-${{ github.sha }}
+        path: dist/ubuntu2004/JS_Inflator.vst3/
