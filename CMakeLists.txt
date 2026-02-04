@@ -7,7 +7,7 @@ project(JS_Inflator
     # This is your plug-in version number. Change it here only.
     # Version number symbols usable in C++ can be found in
     # source/version.h and ${PROJECT_BINARY_DIR}/projectversion.h.
-    VERSION 2.1.0-0
+    VERSION 2.1.0.0
     DESCRIPTION "JS Inflator VST 3 Plug-in"
 )
 
