@@ -19,8 +19,13 @@ build: release
 
 # Release build
 release:
-	cmake -B $(BUILD_DIR) -DCMAKE_BUILD_TYPE=Release -DSMTG_ENABLE_VSTGUI_SUPPORT=ON -DSMTG_ENABLE_VST3_PLUGIN_EXAMPLES=OFF -DSMTG_ENABLE_VST3_HOSTING_EXAMPLES=OFF
-	cmake --build $(BUILD_DIR) --config Release -j$(NPROC)
+	cmake -B build \
+        -DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+		-DFETCHCONTENT_QUIET=OFF
+	cmake --build build --config Release --parallel $(NPROC)
+# 	cmake -B $(BUILD_DIR) -DCMAKE_BUILD_TYPE=Release -DSMTG_ENABLE_VSTGUI_SUPPORT=ON -DSMTG_ENABLE_VST3_PLUGIN_EXAMPLES=OFF -DSMTG_ENABLE_VST3_HOSTING_EXAMPLES=OFF
+# 	cmake --build $(BUILD_DIR) --config Release -j$(NPROC)
 
 # Debug build
 debug:
@@ -95,3 +100,20 @@ help:
 	@echo "  make init		   - Initialize git submodules"
 	@echo "  make format       - Format source code"
 	@echo "  make help         - Show this help message"
+
+# ============================================================================
+# Docker Build Targets
+# ============================================================================
+
+.PHONY: ubuntu2004
+DOCKER := docker
+DOCKER_IMAGE_UBUNTU2004 := jsinflator-vst:ubuntu2004
+
+# Build using Ubuntu 20.04 container
+ubuntu2004:
+	@echo "=== Building with Ubuntu 20.04 Docker ==="
+	$(DOCKER) build --build-arg NOCACHE=$(NOCACHE) -f Dockerfile.ubuntu2004 -t $(DOCKER_IMAGE_UBUNTU2004) .
+	@echo "=== Extracting artifacts from Ubuntu 20.04 build ==="
+	@mkdir -p dist/ubuntu2004
+	$(DOCKER) run --rm -v "$(CURDIR)/dist/ubuntu2004:/out" $(DOCKER_IMAGE_UBUNTU2004)
+	@echo "Artifacts extracted to dist/ubuntu2004/"
