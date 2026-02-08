@@ -11,7 +11,7 @@ Also double precision input / output if supported.
 
 [Project Forked from Kiriki-liszt/JS_Inflator](https://github.com/Kiriki-liszt/JS_Inflator/)
 
-<img src="https://github.com/1800alex/JS_Inflator_to_VST2_VST3/raw/main/screenshots/screenshot_both.png"  width="600"/>  
+<img src="https://github.com/1800alex/JS_Inflator/raw/main/screenshots/screenshot_both.png"  width="600"/>  
 
 Comes in two GUIs. The alternative GUI is made by Twarch.  
 
